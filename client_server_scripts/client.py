@@ -10,9 +10,9 @@ def main():
     input_file = 'input.txt'
     output_file = sys.argv[1]
 
-    server_address = ('localhost', 12345)
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(server_address)
+    server_address = ('localhost', 12345) #The server address that the client should use to connect to the server
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Initializing the socket in order to connect
+    client_socket.connect(server_address) #Connect at the given address
     print(f"Connected to server at {server_address}")
 
     with open(input_file, 'r') as file:
@@ -25,18 +25,18 @@ def main():
         if not prompt:
             continue
 
-        client_socket.sendall(prompt.encode())
-        print(f"Sent prompt: {prompt}")
+        client_socket.sendall(prompt.encode()) #Send everything and encode it in the byte format
+        print(f"Sent prompt: {prompt}") #Sent promp to the sevrer, debugging
 
         response = b""
         while True:
-            part = client_socket.recv(1024)
+            part = client_socket.recv(1024) #Recieving the response using .recv function in the form of bytes
             if not part:
                 break
-            response += part
+            response += part #Adding the response, this is done so thart the entire response is being taken and not just partial response
 
-        response_str = response.decode()
-        print(f"Received raw response: {response_str}")
+        response_str = response.decode() #Decoding from byte to string
+        print(f"Received raw response: {response_str}")#Debugging 
 
         try:
             response_data = json.loads(response_str)
@@ -52,9 +52,9 @@ def main():
 
     with open(output_file, 'w') as file:
         json.dump(responses, file, indent=4)
-    print(f"Responses saved to {output_file}")
+    print(f"Responses saved to {output_file}") #Dump it in the json format into the output file
 
-    client_socket.close()
+    client_socket.close() #End the connection 
 
 if __name__ == "__main__":
     main()
